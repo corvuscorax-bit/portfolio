@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+
