@@ -58,9 +58,30 @@ export default function ExperiencePages() {
 
       {/* Grid of Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {projects
-          .filter((proj) => proj.link !== location.pathname) // Hide current page
-          .map((proj) => (
+        {projects.map((proj) => {
+          const isActive = proj.link === location.pathname;
+
+          return isActive ? (
+            // Active (highlighted, not clickable)
+            <div
+              key={proj.id}
+              className="block bg-blue-50 border-2 border-blue-500 rounded-xl p-6 shadow-lg transform transition duration-200"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                {proj.icon}
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {proj.title}
+                </h2>
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed">
+                {proj.desc}
+              </p>
+              <span className="mt-3 inline-block text-xs font-medium text-blue-600">
+                (You’re here)
+              </span>
+            </div>
+          ) : (
+            // Normal clickable card
             <Link
               key={proj.id}
               to={proj.link}
@@ -76,7 +97,8 @@ export default function ExperiencePages() {
                 {proj.desc}
               </p>
             </Link>
-          ))}
+          );
+        })}
       </div>
     </div>
   );
