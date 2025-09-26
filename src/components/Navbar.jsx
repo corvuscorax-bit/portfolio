@@ -188,6 +188,7 @@ export default function Navbar() {
             <ScrollLink to="#projects" className="hover:text-blue-600" closeMenu={() => setIsOpen(false)}>Projects</ScrollLink>
             <ScrollLink to="#contact" className="hover:text-blue-600" closeMenu={() => setIsOpen(false)}>Contact</ScrollLink>
             <Link to="/resume" className="hover:text-blue-600" closeMenu={() => setIsOpen(false)}>Resume</Link>
+            <Link to="/gallery" onClick={() => {window.scrollTo({ top: 0, behavior: "smooth" });setIsOpen(false);}} className="hover:text-blue-600">Gallery</Link>
 
             {/* Mobile Calculators dropdown */}
             <div className="relative">
