@@ -8,6 +8,7 @@ import Experience1 from "./pages/Experience1";
 import Experience2 from "./pages/Experience2";
 import Experience3 from "./pages/Experience3";
 import Experience4 from "./pages/Experience4";
+import ExperiencePages from "./components/ExperiencePages";
 import ResidentialLoadCalculator from "./projects/ResidentialLoadCalculator";
 import ElectricRangeCalculator from "./projects/ElectricRangeCalculator";
 import Resume from "./pages/Resume";
@@ -32,6 +33,19 @@ function AnimatedRoutes() {
               transition={{ duration: 0.4 }}
             >
               <Home />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/experience-pages"
+          element={
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 30 }}
+              transition={{ duration: 0.4 }}
+            >
+              <ExperiencePages />
             </motion.div>
           }
         />

@@ -3,9 +3,11 @@ import ScaffoldSafetyInspection from "../assets/experience2/1.jpg";
 import TeamSafetySnapshot from "../assets/experience2/2.jpg";
 import HeavyPipeInstallation from "../assets/experience2/3.jpg";
 import CeilingWork from "../assets/experience2/4.jpg";
+import ExperiencePages from "../components/ExperiencePages";
 
 export default function Experience2() {
   return (
+    <main>
     <section className="py-20 bg-gray-50">
       <div className="max-w-6xl mx-auto px-6">
         {/* Title */}
@@ -90,5 +92,7 @@ export default function Experience2() {
         </div>
       </div>
     </section>
+          <ExperiencePages />
+    </main>
   );
 }

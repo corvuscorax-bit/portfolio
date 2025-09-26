@@ -5,9 +5,11 @@ import InstallationofServiceDropandServiceMeterBox from "../assets/experience4/3
 import ElectricalDocumentationandLoadScheduling from "../assets/experience4/4.png";
 import PreConstructionElectricalPlanning from "../assets/experience4/5.png";
 import CeilingLightingandFixtureLayout from "../assets/experience4/6.png";
+import ExperiencePages from "../components/ExperiencePages";
 
 export default function Experience4() {
   return (
+    <main>
     <section className="py-20 bg-gray-50">
       <div className="max-w-6xl mx-auto px-6">
         {/* Title */}
@@ -128,5 +130,7 @@ export default function Experience4() {
         </div>
       </div>
     </section>
+    <ExperiencePages />
+    </main>
   );
 }

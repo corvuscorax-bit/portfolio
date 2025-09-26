@@ -5,9 +5,11 @@ import SchematicDiagram  from "../assets/AcademicResearch/3.png";
 import InstallationofControlCabinet  from "../assets/AcademicResearch/4.jpg";
 import FieldTesting from "../assets/AcademicResearch/6.jpg";
 import SmartFarmingInterface from "../assets/AcademicResearch/7.jpg";
+import ExperiencePages from "../components/ExperiencePages";
 
 export default function AcademicResearch() {
   return (
+    <main>
     <section className="py-20 bg-gray-50">
       <div className="max-w-6xl mx-auto px-6">
         {/* Title */}
@@ -120,5 +122,7 @@ export default function AcademicResearch() {
         </div>
       </div>
     </section>
+    <ExperiencePages />
+    </main>
   );
 }

@@ -1,9 +1,11 @@
 import React from "react";
 import SingleLineDiagram from "../assets/experience1/1.png";
 import PostEarthquakeInspection from "../assets/experience1/2.jpg";
+import ExperiencePages from "../components/ExperiencePages";
 
 export default function Experience1() {
   return (
+    <main>
     <section className="py-20 bg-gray-50">
       <div className="max-w-6xl mx-auto px-6">
         {/* Title */}
@@ -65,5 +67,7 @@ export default function Experience1() {
         </div>
       </div>
     </section>
+          <ExperiencePages />
+    </main>
   );
 }

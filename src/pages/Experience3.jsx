@@ -3,9 +3,11 @@ import CommercialDrafts from "../assets/experience3/1.png";
 import ResidentialDrafts from "../assets/experience3/2.png";
 import RestorationDrafts from "../assets/experience3/3.png";
 import PreConstructionDrafts from "../assets/experience3/4.png";
+import ExperiencePages from "../components/ExperiencePages";
 
 export default function Experience3() {
   return (
+    <main>
     <section className="py-20 bg-gray-50">
       <div className="max-w-6xl mx-auto px-6">
         {/* Title */}
@@ -97,5 +99,7 @@ export default function Experience3() {
         </div>
       </div>
     </section>
+    <ExperiencePages />
+    </main>
   );
 }
