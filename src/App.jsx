@@ -11,6 +11,7 @@ import Experience4 from "./pages/Experience4";
 import ExperiencePages from "./components/ExperiencePages";
 import ResidentialLoadCalculator from "./projects/ResidentialLoadCalculator";
 import ElectricRangeCalculator from "./projects/ElectricRangeCalculator";
+import VoltageDropCalculator from "./projects/VoltageDropCalculator";
 import Resume from "./pages/Resume";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -98,6 +99,19 @@ function AnimatedRoutes() {
               transition={{ duration: 0.4 }}
             >
               <ResidentialLoadCalculator />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/voltage-drop-calculator"
+          element={
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.4 }}
+            >
+              <VoltageDropCalculator />
             </motion.div>
           }
         />

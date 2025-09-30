@@ -4,6 +4,7 @@ import ProjectCard from "./ProjectCard";
 // import your images
 import calcImg from "../assets/calculator.png";
 import calcImg2 from "../assets/calculator2.png";
+import calcImg3 from "../assets/calculator3.png";
 import experiece4Img from "../assets/experience4/7.jpg";
 import experiece3Img from "../assets/experience3/5.jpg";
 import experiece2Img from "../assets/experience2/1.jpg";
@@ -27,6 +28,12 @@ export default function Projects() {
             description="A web-based tool for computing residential electrical loads with demand factor logic, automatic breaker sizing, and PDF/CSV export."
             link="/residential-load-calculator"
             image={calcImg}
+          />
+          <ProjectCard
+            title="Voltage Drop Calculator"
+            description="A web-based tool for computing voltage drop of each branch circuit"
+            link="/voltage-drop-calculator"
+            image={calcImg3}
           />
           <ProjectCard
             title="Freelance Electrical Engineer"

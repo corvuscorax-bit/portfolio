@@ -22,6 +22,7 @@ export default function Navbar() {
   const calculators = [
     { name: "Residential Load Calculator", link: "/residential-load-calculator" },
     { name: "Electric Range Calculator", link: "/electric-range-calculator" },
+    { name: "Voltage Drop Calculator", link: "/voltage-drop-calculator" },
     // Future calculators can be added here
   ];
 
