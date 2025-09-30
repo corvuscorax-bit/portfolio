@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import jsPDF from "jspdf";
 import Footer from "../components/Footer";
 
+
 /**
  * ResidentialLoadCalculator - single-file React component
  * - supports Standard (Part III) and Optional (Part IV) methods
@@ -13,55 +14,50 @@ import Footer from "../components/Footer";
  * Styling uses simple Tailwind utility classes (white bg / black text).
  */
 
-function LabelFields() {
-  return (
-    <section className="grid grid-cols-4 gap-4 text-center">
-      <div className="text-sm font-semibold text-gray-700">Name</div>
-      <div className="text-sm font-semibold text-gray-700">VA</div>
-      <div className="text-sm font-semibold text-gray-700">Qty.</div>
-    </section>
-  );
-}
 
-
-
-function LoadSection({ title, loads, setLoads }) {
+function LoadSection({ title, loads, setLoads,multiplier }) {
   const updateField = (id, field, value) =>
     setLoads(loads.map((l) => (l.id === id ? { ...l, [field]: value } : l)));
 
   const addLoad = () =>
-    setLoads([...loads, { id: Date.now(), name: "New Load", va: 0, qty: 0 }]);
+    setLoads([...loads, { id: Date.now(), name: "New Load", va: 0, qty: 0, multiplier: 100 }]);
 
   const removeLoad = (id) => setLoads(loads.filter((l) => l.id !== id));
 
   const total = loads.reduce(
-    (s, l) => s + (Number(l.va) || 0) * (Number(l.qty) || 0),
+    (s, l) =>
+      s +
+      (Number(l.va) || 0) *
+        (Number(l.qty) || 0) *
+        ((Number(l.multiplier) || 100) / 100),
     0
   );
 
   return (
     <section className="border p-4 rounded mb-6 bg-white">
       <h3 className="font-semibold mb-3">{title}</h3>
-      <LabelFields/>
+      <section className="grid grid-cols-5 gap-4 text-center">
+        <div className="text-sm font-semibold text-gray-700">Name</div>
+        <div className="text-sm font-semibold text-gray-700">VA</div>
+        <div className="text-sm font-semibold text-gray-700">Qty.</div>
+        <div className="text-sm font-semibold text-gray-500">Demand Factor (%)</div>
+        <div className="text-sm font-semibold text-gray-700">Total</div>
+      </section>
 
       {loads.map((item) => (
-        <div
-          key={item.id}
-          className="grid grid-cols-12 gap-2 items-center mb-2"
-          aria-label={`${title} row ${item.name}`}
-        >
+        <div key={item.id} className="grid grid-cols-12 gap-2 items-center mb-2">
           <input
             type="text"
             value={item.name}
             onChange={(e) => updateField(item.id, "name", e.target.value)}
-            className="col-span-4 border p-1 rounded"
+            className="col-span-3 border p-1 rounded"
           />
           <input
             type="number"
             min={0}
             value={item.va}
             onChange={(e) => updateField(item.id, "va", +e.target.value)}
-            className="col-span-3 border p-1 rounded"
+            className="col-span-2 border p-1 rounded"
             placeholder="VA"
           />
           <input
@@ -72,8 +68,22 @@ function LoadSection({ title, loads, setLoads }) {
             className="col-span-2 border p-1 rounded"
             placeholder="qty"
           />
+          <input
+            type="number"
+            min={0}
+            value={item.multiplier}
+            onChange={(e) => updateField(item.id, "multiplier", +e.target.value)}
+            className="col-span-2 border p-1 rounded text-center text-gray-500 bg-gray-100"
+            placeholder="%"
+          />
+
           <span className="col-span-2 text-right">
-            {((Number(item.va) || 0) * (Number(item.qty) || 0)).toLocaleString()} VA
+            {(
+              (Number(item.va) || 0) *
+              (Number(item.qty) || 0) *
+              ((Number(item.multiplier) || 100) / 100)
+            ).toLocaleString()}{" "}
+            VA
           </span>
           <button
             onClick={() => removeLoad(item.id)}
@@ -97,6 +107,7 @@ function LoadSection({ title, loads, setLoads }) {
     </section>
   );
 }
+
 
 function roundBreaker(amps) {
   // Round up amps to next standard breaker size
@@ -181,18 +192,26 @@ export default function ResidentialLoadCalculator() {
 
   // Loads
   const [heating, setHeating] = useState([
-    { id: 1, name: "Electric space heater", va: 1500, qty: 0 },
-    { id: 2, name: "Heat pump / Furnace", va: 6000, qty: 0 },
+    { id: 1, name: "Electric space heater", va: 1500, qty: 0, multiplier: 100},
+    { id: 2, name: "Heat pump / Furnace", va: 6000, qty: 0 , multiplier: 100},
   ]);
-  const [cooling, setCooling] = useState([{ id: 1, name: "Air conditioner", va: 4000, qty: 0 }]);
+  const [cooling, setCooling] = useState([{ id: 1, name: "Air conditioner", va: 4000, qty: 0, multiplier: 100}]);
   const [otherLoads, setOtherLoads] = useState([
-    { id: 1, name: "Range", va: 8000, qty: 1 },
-    { id: 2, name: "Dryer", va: 5000, qty: 1 },
-    { id: 3, name: "Dishwasher", va: 1200, qty: 1 },
-    { id: 4, name: "Microwave", va: 900, qty: 1 },
-    { id: 5, name: "Range hood", va: 600, qty: 1 },
+    { id: 1, name: "Range", va: 8000, qty: 1 , multiplier: 100},
+    { id: 2, name: "Dryer", va: 5000, qty: 1 , multiplier: 100},
+    { id: 3, name: "Water Heater", va: 5000, qty: 1 , multiplier: 100},
+    { id: 4, name: "Dishwasher", va: 1200, qty: 1 , multiplier: 100},
+    { id: 5, name: "Microwave", va: 900, qty: 1 , multiplier: 100},
+    { id: 6, name: "Range hood", va: 600, qty: 1 , multiplier: 100},
   ]);
-  const [evLoads, setEvLoads] = useState([{ id: 1, name: "EV Charger", va: 9600, qty: 0 }]);
+
+  // NEW: Motor Loads
+  const [motorLoads, setMotorLoads] = useState([
+    { id: 1, name: "Water Pump", va: 2000, qty: 0 , multiplier: 100},
+    { id: 2, name: "Air Compressor", va: 3500, qty: 0 , multiplier: 100},
+  ]);
+
+  const [evLoads, setEvLoads] = useState([{ id: 1, name: "EV Charger", va: 9600, qty: 0, multiplier: 100 }]);
 
   // Demand factor settings (editable; defaults depend on method)
   const [demand, setDemand] = useState({
@@ -227,12 +246,39 @@ export default function ResidentialLoadCalculator() {
   const otherVA = otherLoads.reduce((s, l) => s + (Number(l.va) || 0) * (Number(l.qty) || 0), 0);
 
   // HVAC: use larger of heating or cooling (NEC)
-  const heatingVA = heating.reduce((s, l) => s + (Number(l.va) || 0) * (Number(l.qty) || 0), 0);
-  const coolingVA = cooling.reduce((s, l) => s + (Number(l.va) || 0) * (Number(l.qty) || 0), 0);
+  const heatingVA = heating.reduce(
+    (s, l) => s + (Number(l.va) || 0) * (Number(l.qty) || 0) * ((Number(l.multiplier) || 100) / 100),
+    0
+  );
+
+  const coolingVA = cooling.reduce(
+    (s, l) => s + (Number(l.va) || 0) * (Number(l.qty) || 0) * ((Number(l.multiplier) || 100) / 100),
+    0
+  );
+
   const hvacVA = Math.max(heatingVA, coolingVA);
 
   // EV loads are excluded from demand factors and added separately
-  const evVA = evLoads.reduce((s, l) => s + (Number(l.va) || 0) * (Number(l.qty) || 0), 0);
+  const evVA = evLoads.reduce(
+    (s, l) => s + (Number(l.va) || 0) * (Number(l.qty) || 0) * ((Number(l.multiplier) || 100) / 100),
+    0
+  );
+  
+  // Motor loads (sum + 25% single largest motor)
+  const motorTotals = motorLoads.map(l => (Number(l.va) || 0) * (Number(l.qty) || 0));
+  const motorTotal = motorTotals.reduce((a, b) => a + b, 0);
+
+  // ✅ Correct: look only at the per-unit VA values
+  const largestMotorList = motorLoads
+    .filter(l => Number(l.qty) > 0)
+    .map(l => Number(l.va) || 0);
+
+  const largestMotor = largestMotorList.length > 0 ? Math.max(...largestMotorList) : 0;
+
+
+  // NEC rule: add 25% of the largest motor only once
+  const motorVA = motorTotal + 0.25 * largestMotor;
+
 
   // Final demand calculation depending on method
   let demandAppliedVA = 0;
@@ -242,33 +288,32 @@ export default function ResidentialLoadCalculator() {
     // NEC 220 Part III (Standard)
     // Apply NEC lighting demand table ONLY to generalBaseVA
     const g = generalBaseVA;
-    const first3000 = Math.min(3000, g);
-    const between3001and120000 = Math.max(0, Math.min(120000, g) - 3000);
-    const above120000 = Math.max(0, g - 120000);
+    const first = Number(demand.firstVA) || 3000;
+    const remPct = Number(demand.remainderPct) || 35;
+    const firstBlock = Math.min(first, g);
+    const remainderBlock = Math.max(0, g - first);
 
-    const generalDemand =
-      first3000 * 1.0 +
-      between3001and120000 * 0.35 +
-      above120000 * 0.25;
+    const generalDemand = firstBlock * 1.0 + remainderBlock * (remPct / 100);
 
-    // After demand applied to general group, add fixed appliances (otherVA), HVAC (hvacVA), and EV loads (evVA)
-    demandAppliedVA = generalDemand + otherVA + hvacVA + evVA;
+    demandAppliedVA = generalDemand + otherVA + hvacVA + motorVA + evVA;
 
     breakdown = {
-      method: "NEC 220 Part III (Standard)",
+      method: "NEC 220 Part III (Standard, editable)",
       generalBaseVA: g,
+      firstVA: first,
+      firstBlock,
+      remainderBlock,
+      remainderPct: remPct,
       generalDemand,
-      first3000,
-      between3001and120000,
-      above120000,
       otherVA,
       hvacVA,
+      motorVA,
       evVA,
     };
   } else {
     // NEC 220 Part IV (Optional)
     // Treat generalBaseVA + otherVA together (exclude EV and HVAC), apply firstVA @ firstPct, remainder @ remainderPct
-    const baseLoad = generalBaseVA + otherVA;
+    const baseLoad = generalBaseVA + otherVA + hvacVA + motorTotal;
     const first = Number(demand.firstVA) || 10000;
     const firstPct = Number(demand.firstPct) || 100;
     const remPct = Number(demand.remainderPct) || 40;
@@ -281,13 +326,14 @@ export default function ResidentialLoadCalculator() {
     }
 
     // Add HVAC and EV (both added after demandBase)
-    demandAppliedVA = demandBase + hvacVA + evVA;
+    demandAppliedVA = demandBase + evVA + 0.25 * largestMotor;
 
     breakdown = {
       method: "NEC 220 Part IV (Optional)",
       baseLoad,
       demandBase,
       hvacVA,
+      motorVA,
       evVA,
       firstVA: first,
       firstPct,
@@ -470,6 +516,10 @@ export default function ResidentialLoadCalculator() {
                         className="w-1/2 border p-2 rounded"
                     />
                     </div>
+                    <section className="grid grid-cols-2 gap-4 text-center">
+                      <div className="text-xs font-semibold text-gray-400">First VA</div>
+                      <div className="text-xs font-semibold text-gray-400">Remainder @ %DF</div>
+                    </section>
                     <div className="text-xs text-gray-600 mt-1">(first VA & remainder % — defaults set by method)</div>
                 </label>
                 </div>
@@ -538,14 +588,23 @@ export default function ResidentialLoadCalculator() {
             {/* HVAC */}
             <section className="border p-4 rounded bg-gray-50">
                 <h2 className="text-xl font-semibold mb-4">HVAC Loads</h2>
-                <LoadSection title="🔥 Heating" loads={heating} setLoads={setHeating} />
-                <LoadSection title="❄️ Cooling" loads={cooling} setLoads={setCooling} />
+                <LoadSection title="🔥 Heating" loads={heating} setLoads={setHeating} multiplier />
+                <LoadSection title="❄️ Cooling" loads={cooling} setLoads={setCooling} multiplier />
                 <p className="mt-2 font-medium">Heating: {fmt(heatingVA)} VA • Cooling: {fmt(coolingVA)} VA</p>
                 <p className="font-medium">HVAC used (larger): {fmt(hvacVA)} VA</p>
             </section>
 
+            {/* Motor Loads */}
+            <section className="border p-4 rounded bg-gray-50">
+            <LoadSection title="Motor Loads" loads={motorLoads} setLoads={setMotorLoads} />
+            <p className="mt-2 font-medium">
+              Motor Loads Total = {fmt(motorTotal)} VA + 25% of single largest motor ({fmt(Math.round(0.25 * largestMotor))} VA)  
+              → {fmt(motorVA)} VA
+            </p>
+            </section>
+
             {/* EV Charging */}
-            <LoadSection title="EV Charging (excluded from demand factors)" loads={evLoads} setLoads={setEvLoads} />
+            <LoadSection title="EV Charging" loads={evLoads} setLoads={setEvLoads} multiplier />
 
             {/* Final Calculation + Explanations */}
             <section className="border p-4 rounded bg-gray-50">
@@ -553,22 +612,25 @@ export default function ResidentialLoadCalculator() {
 
                 {method === "standard" ? (
                 <>
-                    <p>NEC Standard (Part III): demand applied only to general group (lighting + SA + laundry)</p>
-                    <p>First 3,000 VA = {fmt(breakdown.first3000)} VA</p>
-                    <p>3001–120,000 portion = {fmt(breakdown.between3001and120000)} VA @ 35%</p>
-                    {breakdown.above120000 > 0 && <p>Above 120,000 portion = {fmt(breakdown.above120000)} VA @ 25%</p>}
-                    <p>General demand result = {fmt(breakdown.generalDemand)} VA</p>
-                    <p>Other fixed loads (added after) = {fmt(breakdown.otherVA)} VA</p>
-                    <p>HVAC added (larger of heat/cool) = {fmt(breakdown.hvacVA)} VA</p>
-                    <p>EV loads (excluded from demand) = {fmt(breakdown.evVA)} VA</p>
+                    <p>NEC Standard (Part III): demand applied only to general group (general lighting and receptacles + small appliance + laundry)</p>
+                    <p>General Loads (general lighting and receptacles + small appliance + laundry) = {fmt(breakdown.generalBaseVA)} VA</p>
+                    <p>First {fmt(breakdown.firstVA)} VA @ {demand.firstPct}% + remainder ({fmt(breakdown.generalBaseVA)} - {fmt(breakdown.firstVA)})  @ {demand.remainderPct}% DF → Subtotal = {fmt(breakdown.generalDemand)} VA</p>
+                    <p>Other Loads (added after) = {fmt(breakdown.otherVA)} VA</p>
+                    <p>HVAC Loads (larger of heating/cooling) = {fmt(breakdown.hvacVA)} VA</p>
+                    <p>Motor Loads = {fmt(motorTotal)} VA</p>
+                    <p>Additional 25% of single Largest Motor = {fmt(Math.round(0.25 * largestMotor))} VA</p>
+                    <p>EV Loads (excluded from demand) = {fmt(breakdown.evVA)} VA</p>
                 </>
                 ) : (
                 <>
-                    <p>NEC Optional (Part IV): general + fixed loads combined for demand factor</p>
-                    <p>Base (general + other fixed) = {fmt(breakdown.baseLoad)}</p>
-                    <p>Demand rule: first {fmt(breakdown.firstVA)} VA @ {demand.firstPct}%, remainder @ {demand.remainderPct}% → demand result = {fmt(breakdown.demandBase)}</p>
-                    <p>HVAC added (larger of heat/cool) = {fmt(breakdown.hvacVA)} VA</p>
-                    <p>EV loads (excluded from demand) = {fmt(breakdown.evVA)} VA</p>
+                    <p>NEC Optional (Part IV): demand applied only to (general + other + hvac + motor)</p>
+                    <p>General Loads = {fmt(generalBaseVA)} VA</p>
+                    <p>Other Loads = {fmt(otherVA)} VA</p>
+                    <p>HVAC Loads(larger of heating/cooling) = {fmt(breakdown.hvacVA)} VA</p>
+                    <p>Motor Loads = {fmt(motorTotal)} VA</p>
+                    <p>First {fmt(breakdown.firstVA)} VA @ {demand.firstPct}% + remainder ({fmt(breakdown.baseLoad)} - {fmt(breakdown.firstVA)}) @ {fmt(breakdown.remainderPct)}% DF → Subtotal = {fmt(breakdown.demandBase)} VA</p>
+                    <p>Additional 25% of single Largest Motor = {fmt(Math.round(0.25 * largestMotor))} VA</p>
+                    <p>EV Loads (excluded from demand) = {fmt(breakdown.evVA)} VA</p>
                 </>
                 )}
 
@@ -593,7 +655,7 @@ export default function ResidentialLoadCalculator() {
             </p>
             </div>
         </main>
-        <Footer />
+      <Footer />
     </div>
   );
 }

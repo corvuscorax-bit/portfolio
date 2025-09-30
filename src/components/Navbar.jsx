@@ -1,6 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ScrollLink from "./ScrollLink";
+import {
+  Cable,
+  Gauge,
+  SquareStack,
+  Cog,
+  Flame,
+  FileText,
+  CookingPot
+} from "lucide-react"; // icons
 
 const referencePDFs = [
   { id: 1, name: "ARTICLE 220 Branch-Circuit, Feeder, and Service Calculations", file: "/pdfs/reference-tables.pdf" },
@@ -20,10 +29,21 @@ export default function Navbar() {
   const modalRef = useRef(null);
 
   const calculators = [
-    { name: "Residential Load Calculator", link: "/residential-load-calculator" },
-    { name: "Electric Range Calculator", link: "/electric-range-calculator" },
-    { name: "Voltage Drop Calculator", link: "/voltage-drop-calculator" },
-    // Future calculators can be added here
+    {
+      name: "Residential Load Calculator",
+      link: "/residential-load-calculator",
+      icon: <Gauge className="w-4 h-4 text-green-600" />,
+    },    
+    {
+      name: "Electric Range Calculator",
+      link: "/electric-range-calculator",
+      icon: <CookingPot className="w-4 h-4 text-green-600" />,
+    },
+    {
+      name: "Voltage Drop Calculator",
+      link: "/voltage-drop-calculator",
+      icon: <Cable className="w-4 h-4 text-blue-600" />,
+    },
   ];
 
   // Clear any pending close timeout on unmount
@@ -167,10 +187,11 @@ export default function Navbar() {
                   <Link
                     key={idx}
                     to={calc.link}
-                    className="block px-4 py-2 hover:bg-gray-100 hover:text-blue-600"
+                    className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 hover:text-blue-600"
                     onClick={() => setDesktopOpen(false)}
                     role="menuitem"
                   >
+                    {calc.icon}
                     {calc.name}
                   </Link>
                 ))}
@@ -219,12 +240,13 @@ export default function Navbar() {
                     <Link
                       key={idx}
                       to={calc.link}
-                      className="px-4 py-2 hover:bg-gray-100 rounded hover:text-blue-600"
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded hover:text-blue-600"
                       onClick={() => {
                         setIsOpen(false);
                         setMobileCalcOpen(false);
                       }}
                     >
+                      {calc.icon}
                       {calc.name}
                     </Link>
                   ))}
