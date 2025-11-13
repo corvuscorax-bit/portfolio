@@ -22,7 +22,7 @@ export default function About() {
           <p className="text-lg text-gray-700 leading-relaxed mb-6">
             I’m <span className="font-semibold text-blue-600">Raven Pascua</span>,
             a Registered Electrical Engineer with a strong foundation in{" "}
-            <span className="font-medium">AutoCAD, Revit, C, C++, MATLAB, and Visual Studio</span>.
+            <span className="font-medium">AutoCAD, C, C++, MATLAB, and Visual Studio</span>.
             I combine engineering principles with coding to design innovative tools
             and applications. My experience spans{" "}
             <span className="italic">
