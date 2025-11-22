@@ -4,10 +4,7 @@ import ScrollLink from "./ScrollLink";
 import {
   Cable,
   Gauge,
-  SquareStack,
-  Cog,
-  Flame,
-  FileText,
+  Lightbulb,
   CookingPot
 } from "lucide-react"; // icons
 
@@ -37,13 +34,18 @@ export default function Navbar() {
     {
       name: "Electric Range Calculator",
       link: "/electric-range-calculator",
-      icon: <CookingPot className="w-4 h-4 text-green-600" />,
+      icon: <CookingPot className="w-4 h-4 text-red-600" />,
     },
     {
       name: "Voltage Drop Calculator",
       link: "/voltage-drop-calculator",
       icon: <Cable className="w-4 h-4 text-blue-600" />,
     },
+    {
+      name: "Lighting Calculator",
+      link: "/lighting-calculator",
+      icon: <Lightbulb className="w-4 h-4 text-yellow-500" />,
+    }, 
   ];
 
   // Clear any pending close timeout on unmount
@@ -148,6 +150,7 @@ export default function Navbar() {
           <ScrollLink to="#contact" className="hover:text-blue-600">Contact</ScrollLink>
           <Link to="/resume" className="hover:text-blue-600">Resume</Link>
           <Link to="/gallery" className="hover:text-blue-600">Gallery</Link>
+          <Link to="/certificates" className="hover:text-blue-600">Certificates</Link>
 
 
           {/* Calculators dropdown (desktop) */}
@@ -211,6 +214,7 @@ export default function Navbar() {
             <ScrollLink to="#contact" className="hover:text-blue-600" closeMenu={() => setIsOpen(false)}>Contact</ScrollLink>
             <Link to="/resume" onClick={() => {window.scrollTo({ top: 0, behavior: "smooth" });setIsOpen(false);}} className="hover:text-blue-600">Resume</Link>
             <Link to="/gallery" onClick={() => {window.scrollTo({ top: 0, behavior: "smooth" });setIsOpen(false);}} className="hover:text-blue-600">Gallery</Link>
+            <Link to="/certificates" onClick={() => {window.scrollTo({ top: 0, behavior: "smooth" });setIsOpen(false);}} className="hover:text-blue-600">Certificates</Link>
 
             {/* Mobile Calculators dropdown */}
             <div className="relative">

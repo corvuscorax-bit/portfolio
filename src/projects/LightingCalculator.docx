@@ -1,0 +1,250 @@
+// LightingCalculator.jsx (Simplified Version)
+import React, { useEffect, useState } from "react";
+
+const ROOM_DEFAULTS = {
+  "Living / Lounge": 150,
+  Bedroom: 100,
+  Kitchen: 300,
+  Dining: 150,
+  Corridor: 100,
+  Bathroom: 200,
+  Storage: 100,
+  Garage: 150,
+  Classroom: 300,
+  Office: 500,
+  "Outdoor (path)": 50,
+};
+
+// conversions
+const LUX_TO_FC = (lux) => lux / 10.764;
+const FC_TO_LUX = (fc) => fc * 10.764;
+const M_TO_FT = (m) => m * 3.28084;
+const FT_TO_M = (ft) => ft / 3.28084;
+
+function round(n, d = 2) {
+  if (!isFinite(n)) return 0;
+  return Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
+}
+
+export default function LightingCalculator() {
+  const [unit, setUnit] = useState("metric");
+
+  const [roomType, setRoomType] = useState("Living / Lounge");
+  const [width, setWidth] = useState(5.0);
+  const [length, setLength] = useState(4.0);
+
+  const [illuminanceValue, setIlluminanceValue] = useState(
+    ROOM_DEFAULTS["Living / Lounge"]
+  );
+
+  const [fixtureLumens, setFixtureLumens] = useState(800);
+  const [fixtureWatts, setFixtureWatts] = useState(12);
+
+  const [hoursPerDay, setHoursPerDay] = useState(5);
+  const [costPerKwh, setCostPerKwh] = useState(0.15);
+
+  const [result, setResult] = useState(null);
+
+  useEffect(() => {
+    const defaultLux = ROOM_DEFAULTS[roomType] || 200;
+    if (unit === "metric") {
+      setIlluminanceValue(defaultLux);
+    } else {
+      setIlluminanceValue(round(LUX_TO_FC(defaultLux), 2));
+    }
+  }, [roomType, unit]);
+
+  // Unit conversion
+  const toggleUnit = (newUnit) => {
+    if (newUnit === unit) return;
+
+    if (newUnit === "imperial") {
+      setWidth(round(M_TO_FT(width), 3));
+      setLength(round(M_TO_FT(length), 3));
+      setIlluminanceValue(round(LUX_TO_FC(illuminanceValue), 2));
+    } else {
+      setWidth(round(FT_TO_M(width), 3));
+      setLength(round(FT_TO_M(length), 3));
+      setIlluminanceValue(round(FC_TO_LUX(illuminanceValue), 2));
+    }
+
+    setUnit(newUnit);
+  };
+
+  useEffect(() => {
+    const illumLux =
+      unit === "metric"
+        ? Number(illuminanceValue)
+        : FC_TO_LUX(Number(illuminanceValue));
+
+    const w = Number(width) || 0;
+    const l = Number(length) || 0;
+    const area = w * l;
+
+    // Convert ft² → m² if needed
+    const area_m2 = unit === "metric" ? area : area * 0.092903;
+
+    const requiredLumens = illumLux * area_m2;
+    const perFixtureLumens = Number(fixtureLumens) || 0;
+
+    let numFixtures =
+      perFixtureLumens > 0
+        ? Math.ceil(requiredLumens / perFixtureLumens)
+        : 1;
+    if (numFixtures < 1) numFixtures = 1;
+
+    const spacing = Math.sqrt(area / numFixtures);
+
+    const totalWatts = numFixtures * Number(fixtureWatts || 0);
+    const monthlyKWh = (totalWatts / 1000) * hoursPerDay * 30;
+    const monthlyCost = monthlyKWh * costPerKwh;
+
+    setResult({
+      area: round(area, 3),
+      illumLux: round(illumLux, 1),
+      numFixtures,
+      spacing: round(spacing, 3),
+      totalWatts,
+      monthlyKWh: round(monthlyKWh, 2),
+      monthlyCost: round(monthlyCost, 2),
+    });
+  }, [
+    unit,
+    width,
+    length,
+    illuminanceValue,
+    fixtureLumens,
+    fixtureWatts,
+    hoursPerDay,
+    costPerKwh,
+  ]);
+
+  const dim = unit === "metric" ? "m" : "ft";
+
+  return (
+    <div className="max-w-3xl mx-auto bg-white p-6 rounded shadow space-y-6">
+      <h2 className="text-2xl font-bold">Lighting Calculator</h2>
+
+      <label>
+        Unit System
+        <select
+          value={unit}
+          onChange={(e) => toggleUnit(e.target.value)}
+          className="block w-full border p-2 rounded mt-1"
+        >
+          <option value="metric">Metric (m / lux)</option>
+          <option value="imperial">Imperial (ft / fc)</option>
+        </select>
+      </label>
+
+      <label>
+        Room Type
+        <select
+          value={roomType}
+          onChange={(e) => setRoomType(e.target.value)}
+          className="block w-full border p-2 rounded mt-1"
+        >
+          {Object.keys(ROOM_DEFAULTS).map((r) => (
+            <option key={r}>{r}</option>
+          ))}
+        </select>
+      </label>
+
+      <div className="grid grid-cols-2 gap-4">
+        <label>
+          Width ({dim})
+          <input
+            type="number"
+            value={width}
+            step="0.01"
+            onChange={(e) => setWidth(e.target.value)}
+            className="block w-full border p-2 rounded mt-1"
+          />
+        </label>
+
+        <label>
+          Length ({dim})
+          <input
+            type="number"
+            value={length}
+            step="0.01"
+            onChange={(e) => setLength(e.target.value)}
+            className="block w-full border p-2 rounded mt-1"
+          />
+        </label>
+      </div>
+
+      <label>
+        Recommended Illuminance ({unit === "metric" ? "lux" : "fc"})
+        <input
+          type="number"
+          value={illuminanceValue}
+          onChange={(e) => setIlluminanceValue(e.target.value)}
+          className="block w-full border p-2 rounded mt-1"
+        />
+      </label>
+
+      <div className="grid grid-cols-2 gap-4">
+        <label>
+          Fixture Lumens
+          <input
+            type="number"
+            value={fixtureLumens}
+            onChange={(e) => setFixtureLumens(e.target.value)}
+            className="block w-full border p-2 rounded mt-1"
+          />
+        </label>
+
+        <label>
+          Fixture Watts
+          <input
+            type="number"
+            value={fixtureWatts}
+            onChange={(e) => setFixtureWatts(e.target.value)}
+            className="block w-full border p-2 rounded mt-1"
+          />
+        </label>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <label>
+          Hours Used per day
+          <input
+            type="number"
+            value={hoursPerDay}
+            onChange={(e) => setHoursPerDay(e.target.value)}
+            className="block w-full border p-2 rounded mt-1"
+          />
+        </label>
+
+        <label>
+          Electricity Cost (per kWh)
+          <input
+            type="number"
+            value={costPerKwh}
+            step="0.01"
+            onChange={(e) => setCostPerKwh(e.target.value)}
+            className="block w-full border p-2 rounded mt-1"
+          />
+        </label>
+      </div>
+
+      {result && (
+        <div className="bg-gray-50 p-4 rounded border text-sm space-y-2">
+          <div>Area: <strong>{result.area} {unit === "metric" ? "m²" : "ft²"}</strong></div>
+          <div>Target Illuminance: <strong>{result.illumLux} lux</strong></div>
+          <div>Fixtures Needed: <strong>{result.numFixtures}</strong></div>
+          <div>Suggested Spacing: <strong>{result.spacing} {dim}</strong></div>
+          <div>Total Power: <strong>{result.totalWatts} W</strong></div>
+          <div>Monthly Energy: <strong>{result.monthlyKWh} kWh</strong></div>
+          <div>Monthly Cost: <strong>{result.monthlyCost}</strong></div>
+        </div>
+      )}
+
+      <p className="text-xs text-gray-600">
+            Note: This tool is only a design aid. Always verify final calculations with the National Electrical Code (NEC) and a licensed electrical engineer.
+      </p>
+      
+    </div>
+  );
+}

@@ -407,18 +407,9 @@ export default function VoltageDropCalculator() {
       </div>
 
       <button onClick={addCircuit} className="px-3 py-1 bg-green-100 text-green-700 rounded">+ Add Circuit</button>
-      <div className="text-xs text-gray-500 mt-2">
-        Notes:
-          <ol className="list-decimal ml-5">
-            <p>1. These values are based on the following constants: UL-Type RHH wires with Class B stranding, in cradled configuration. Wire conductivities are
-            100 percent IACS copper and 61 percent IACS aluminum, and aluminum conduit is 45 percent IACS. Capacitive reactance is ignored, since it is negli‐
-            gible at these voltages. These resistance values are valid only at 75°C (167°F) and for the parameters as given, but are representative for 600-volt wire
-            types operating at 60 Hz.</p>
-            <p>2. Effective Z is defined as R cos(θ) + X sin(θ), where θ is the power factor angle of the circuit. Multiplying current by effective impedance gives a good
-            approximation for line-to-neutral voltage drop. Effective impedance values shown in this table are valid only at 0.85 power factor. For another circuit
-            power factor (PF), effective impedance (Ze) can be calculated from R and X L values given in this table as follows: Ze = R × PF + X L sin[arccos(PF)]</p>
-          </ol>
-        </div>
+      <p className="text-xs text-gray-600">
+            Note: This tool is only a design aid. Always verify final calculations with the National Electrical Code (NEC) and a licensed electrical engineer.
+      </p>
 
       <div className="mt-10">
         <h2 className="text-lg font-bold mb-2">📘 NEC Table 9 Reference</h2>

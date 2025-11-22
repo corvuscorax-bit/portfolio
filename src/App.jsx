@@ -12,6 +12,8 @@ import ExperiencePages from "./components/ExperiencePages";
 import ResidentialLoadCalculator from "./projects/ResidentialLoadCalculator";
 import ElectricRangeCalculator from "./projects/ElectricRangeCalculator";
 import VoltageDropCalculator from "./projects/VoltageDropCalculator";
+import LightingCalculator from "./projects/LightingCalculator";
+import Certificates from "./pages/Certificates";
 import Resume from "./pages/Resume";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -116,6 +118,19 @@ function AnimatedRoutes() {
           }
         />
         <Route
+          path="/lighting-calculator"
+          element={
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.4 }}
+            >
+              <LightingCalculator />
+            </motion.div>
+          }
+        />
+        <Route
           path="/experience-4"
           element={
             <motion.div
@@ -177,6 +192,19 @@ function AnimatedRoutes() {
               transition={{ duration: 0.4 }}
             >
               <AcademicResearch />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/certificates"
+          element={
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 30 }}
+              transition={{ duration: 0.4 }}
+            >
+              <Certificates />
             </motion.div>
           }
         />

@@ -21,12 +21,12 @@ export default function About() {
           </h2>
           <p className="text-lg text-gray-700 leading-relaxed mb-6">
             I’m <span className="font-semibold text-blue-600">Raven Pascua</span>,
-            a Registered Electrical Engineer with a strong foundation in{" "}
-            <span className="font-medium">AutoCAD, C, C++, MATLAB, and Visual Studio</span>.
+            a Registered Electrical Engineer with a foundation in{" "}
+            <span className="font-medium">AutoCAD, SketchUp, C, C++, Java, and MATLAB</span>.
             I combine engineering principles with coding to design innovative tools
             and applications. My experience spans{" "}
             <span className="italic">
-              electrical wiring, planning, drafting, safety protocols, and software development
+              electrical wiring, planning, drafting, safety protocols, and web development
             </span>
             , always with a focus on delivering solid, reliable work.
           </p>
