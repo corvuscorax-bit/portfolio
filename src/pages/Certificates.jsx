@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CertificateModal from "../components/CertificateModal";
+import Footer from "../components/Footer";
 
 // Automatically import all images in folders
 const categories = {
@@ -28,7 +29,7 @@ export default function Certificates() {
   const [selected, setSelected] = useState(null);
 
   return (
-    <main className="py-20 bg-gray-50">
+    <main className="py-auto bg-gray-50">
       <div className="max-w-6xl mx-auto px-6">
         <h2 className="text-4xl font-bold text-center mb-10">
           Certificates & Training
@@ -69,6 +70,8 @@ export default function Certificates() {
       {selected && (
         <CertificateModal file={selected.file} onClose={() => setSelected(null)} />
       )}
+      
+      <Footer />
     </main>
   );
 }

@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 export default function Resume() {
   return (
     <div className="flex flex-col min-h-screen">
-      <section className="py-20 bg-gray-50 flex-1">
+      <section className="py-auto bg-gray-50 flex-1">
         <div className="max-w-4xl mx-auto text-center px-6">
           <h2 className="text-3xl font-bold mb-6">My Resume</h2>
           <p className="text-gray-600 mb-6">

@@ -406,7 +406,7 @@ export default function VoltageDropCalculator() {
       </table>
       </div>
 
-      <button onClick={addCircuit} className="px-3 py-1 bg-green-100 text-green-700 rounded">+ Add Circuit</button>
+      <button onClick={addCircuit} className="px-3 py-1 bg-green-100 text-green-700 text-sm rounded">+ Add Circuit</button>
       <p className="text-xs text-gray-600">
             Note: This tool is only a design aid. Always verify final calculations with the National Electrical Code (NEC) and a licensed electrical engineer.
       </p>

@@ -6,6 +6,7 @@ import InstallationofControlCabinet from "../assets/AcademicResearch/4.jpg";
 import FieldTesting from "../assets/AcademicResearch/6.jpg";
 import SmartFarmingInterface from "../assets/AcademicResearch/7.jpg";
 import ExperiencePages from "../components/ExperiencePages";
+import Footer from "../components/Footer";
 
 export default function AcademicResearch() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -53,8 +54,7 @@ export default function AcademicResearch() {
   ];
 
   return (
-    <main>
-      <section className="py-20 bg-gray-50">
+    <main className="py-auto bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           {/* Title */}
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-800">
@@ -106,7 +106,6 @@ export default function AcademicResearch() {
             </p>
           </div>
         </div>
-      </section>
 
       {/* Fullscreen image modal */}
       {selectedImage && (
@@ -129,6 +128,7 @@ export default function AcademicResearch() {
       )}
 
       <ExperiencePages />
+      <Footer />
     </main>
   );
 }

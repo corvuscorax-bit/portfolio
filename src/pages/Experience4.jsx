@@ -6,6 +6,7 @@ import ElectricalPanelInstallation from "../assets/experience4/2.png";
 import InstallationofServiceDropandServiceMeterBox from "../assets/experience4/3.png";
 import CeilingLightingandFixtureLayout from "../assets/experience4/6.png";
 import ExperiencePages from "../components/ExperiencePages";
+import Footer from "../components/Footer";
 
 export default function Experience4() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -75,8 +76,7 @@ export default function Experience4() {
   ];
 
   return (
-    <main>
-      <section className="py-20 bg-gray-50">
+    <main className="py-auto bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           {/* Title */}
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-800">
@@ -121,7 +121,6 @@ export default function Experience4() {
             </p>
           </div>
         </div>
-      </section>
 
       {/* Fullscreen image modal */}
       {selectedImage && (
@@ -144,6 +143,7 @@ export default function Experience4() {
       )}
 
       <ExperiencePages />
+      <Footer />
     </main>
   );
 }

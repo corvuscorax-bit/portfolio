@@ -301,8 +301,18 @@ export default function ElectricRangeCalculator() {
               )}
             </div>
 
+            {room.appliances.length > 0 && (
+              <div className="grid grid-cols-12 gap-2 text-xs font-semibold border-b pb-1">
+                <div className="col-span-3">Name</div>
+                <div className="col-span-3">kW</div>
+                <div className="col-span-2">Qty</div>
+                <div className="col-span-3">Total kW</div>
+                <div className="col-span-1">Remove</div>
+              </div>
+            )}
+
             {room.appliances.map((a) => (
-              <div key={a.id} className="grid grid-cols-12 gap-2 items-center">
+              <div key={a.id} className="grid grid-cols-12 gap-2 items-center mb-1">
                 <select
                   value={a.type}
                   onChange={(e) =>

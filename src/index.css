@@ -1,19 +1,21 @@
 @import "tailwindcss";
 
-@layer components {
-  .close-button {
-    @apply absolute top-3 right-3 
-           text-black
-           hover:bg-gray-100
-           rounded-full 
-           p-2 
-           transition 
-           duration-200 
-           z-50 
-           cursor-pointer;
-  }
+/* Close button styling (without @apply) */
+.close-button {
+  position: absolute;
+  top: 0.75rem; /* top-3 */
+  right: 0.75rem; /* right-3 */
+  color: black; /* text-black */
+  background-color: transparent;
+  border-radius: 9999px; /* rounded-full */
+  padding: 0.5rem; /* p-2 */
+  cursor: pointer;
+  transition-property: background-color, color, border-color;
+  transition-duration: 200ms;
+  background-color: #f3f4f6;
 }
 
+/* Generic button styling */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -21,12 +23,13 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
 
+/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
-
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import SingleLineDiagram from "../assets/experience1/1.png";
 import PostEarthquakeInspection from "../assets/experience1/2.jpg";
 import ExperiencePages from "../components/ExperiencePages";
+import Footer from "../components/Footer";
 
 export default function Experience1() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -35,8 +36,7 @@ export default function Experience1() {
   ];
 
   return (
-    <main>
-      <section className="py-20 bg-gray-50">
+    <main className="py-auto bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           {/* Title */}
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-800">
@@ -81,7 +81,6 @@ export default function Experience1() {
             </p>
           </div>
         </div>
-      </section>
 
       {/* Fullscreen image modal */}
       {selectedImage && (
@@ -104,6 +103,7 @@ export default function Experience1() {
       )}
 
       <ExperiencePages />
+      <Footer />
     </main>
   );
 }

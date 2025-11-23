@@ -14,6 +14,13 @@ import Footer from "../components/Footer";
  * Styling uses simple Tailwind utility classes (white bg / black text).
  */
 
+// Conversion constants
+const SQM_TO_SQFT = 10.7639104;
+const SQFT_TO_SQM = 1 / SQM_TO_SQFT;
+
+function round(n, d = 2) {
+  return Math.round(n * Math.pow(10, d)) / Math.pow(10, d);
+}
 
 function LoadSection({ title, loads, setLoads,multiplier }) {
   const updateField = (id, field, value) =>
@@ -127,11 +134,13 @@ function buildCSV({
   heatingVA,
   coolingVA,
   hvacVA,
+  motorVA,
   evVA,
   demandAppliedVA,
   amps,
   method,
   demand,
+  suggestedBreaker,
   loadsAll,
 }) {
   const rows = [];
@@ -147,23 +156,24 @@ function buildCSV({
   rows.push(["Other fixed loads (sum)", otherVA]);
   rows.push(["Heating total", heatingVA]);
   rows.push(["Cooling total", coolingVA]);
-  rows.push(["HVAC used (larger)", hvacVA]);
+  rows.push(["HVAC used (larger  of heating/cooling)", hvacVA]);
+  rows.push(["Total Motor Loads", motorVA]);
   rows.push(["EV loads (excluded from demand)", evVA]);
   rows.push([]);
   rows.push(["Demand settings", `firstVA=${demand.firstVA}, firstPct=${demand.firstPct}, remainderPct=${demand.remainderPct}`]);
   rows.push(["Total Demand Load (VA)", Math.round(demandAppliedVA)]);
   rows.push(["Calculated Current (A)", amps.toFixed(2)]);
-  rows.push(["Recommended Breaker", roundBreaker(amps)]);
+  rows.push(["Recommended Main Breaker", suggestedBreaker]);
   rows.push([]);
   rows.push(["--- Detailed Loads ---"]);
-  rows.push(["Category", "Name", "VA", "Qty", "Total (VA)"]);
+  rows.push(["Category", "Name", "VA", "Qty", "Demand Factor (%)", "Total (VA)"]);
 
   // append loads
   Object.entries(loadsAll).forEach(([cat, arr]) => {
     if (arr.length === 0) return;
     rows.push([cat.toUpperCase()]);
     arr.forEach((l) => {
-      rows.push([cat, l.name, l.va, l.qty, (Number(l.va) || 0) * (Number(l.qty) || 0)]);
+      rows.push([cat, l.name, l.va, l.qty, l.multiplier, (Number(l.va) || 0) * (Number(l.qty) || 0) * (Number((l.multiplier)/100) || 0)]);
     });
   });
 
@@ -179,7 +189,7 @@ export default function ResidentialLoadCalculator() {
   // Units & basic settings
   const [unit, setUnit] = useState("sqm"); // "sqm" or "sqft"
   const [general, setGeneral] = useState({
-    floorArea: 0,
+    floorArea: 150,
     vaPerSqm: 33,
     vaPerSqft: 3,
     smallApplianceCircuits: 2,
@@ -231,6 +241,20 @@ export default function ResidentialLoadCalculator() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [method]);
+
+    // --- AUTO CONVERT FLOOR AREA ON UNIT CHANGE ---
+  const handleUnitChange = (newUnit) => {
+    if (newUnit === unit) return;
+
+    const oldArea = Number(general.floorArea) || 0;
+    let newArea = oldArea;
+
+    if (unit === "sqm" && newUnit === "sqft") newArea = round(oldArea * SQM_TO_SQFT, 2);
+    if (unit === "sqft" && newUnit === "sqm") newArea = round(oldArea * SQFT_TO_SQM, 2);
+
+    setUnit(newUnit);
+    setGeneral({ ...general, floorArea: newArea });
+  };
 
   // --- CALCULATIONS ---
   const perAreaVA = unit === "sqm" ? general.vaPerSqm : general.vaPerSqft;
@@ -298,7 +322,7 @@ export default function ResidentialLoadCalculator() {
     demandAppliedVA = generalDemand + otherVA + hvacVA + motorVA + evVA;
 
     breakdown = {
-      method: "NEC 220 Part III (Standard, editable)",
+      method: "NEC 220 Part III (Standard)",
       generalBaseVA: g,
       firstVA: first,
       firstBlock,
@@ -354,6 +378,7 @@ export default function ResidentialLoadCalculator() {
     other: otherLoads,
     heating,
     cooling,
+    motorLoads,
     ev: evLoads,
   };
 
@@ -373,11 +398,13 @@ export default function ResidentialLoadCalculator() {
       heatingVA,
       coolingVA,
       hvacVA,
+      motorVA,
       evVA,
       demandAppliedVA,
       amps,
       method,
       demand,
+      suggestedBreaker,
       loadsAll,
     });
     const blob = new Blob([csv], { type: "text/csv" });
@@ -419,6 +446,7 @@ export default function ResidentialLoadCalculator() {
       push("Heating (VA)", Math.round(heatingVA));
       push("Cooling (VA)", Math.round(coolingVA));
       push("HVAC used (VA)", Math.round(hvacVA));
+      push("Total Motor Loads (VA)", Math.round(motorVA));
       push("EV loads (VA)", Math.round(evVA));
 
       doc.text("---- Demand application ----", 40, y);
@@ -433,7 +461,7 @@ export default function ResidentialLoadCalculator() {
 
       push("Total Demand Load (VA)", Math.round(demandAppliedVA));
       push("Calculated Current (A)", amps.toFixed(2));
-      push("Suggested Breaker", suggestedBreaker);
+      push("Suggested Main Breaker", suggestedBreaker);
 
       doc.save(`electrical-load-${method}-${Date.now()}.pdf`);
     } catch (err) {
@@ -477,7 +505,7 @@ export default function ResidentialLoadCalculator() {
                     Floor Area Unit
                     <select
                     value={unit}
-                    onChange={(e) => setUnit(e.target.value)}
+                    onChange={(e) => handleUnitChange(e.target.value)}
                     className="w-full border p-2 rounded"
                     >
                     <option value="sqm">Square meters (33 VA/m²)</option>
@@ -591,14 +619,14 @@ export default function ResidentialLoadCalculator() {
                 <LoadSection title="🔥 Heating" loads={heating} setLoads={setHeating} multiplier />
                 <LoadSection title="❄️ Cooling" loads={cooling} setLoads={setCooling} multiplier />
                 <p className="mt-2 font-medium">Heating: {fmt(heatingVA)} VA • Cooling: {fmt(coolingVA)} VA</p>
-                <p className="font-medium">HVAC used (larger): {fmt(hvacVA)} VA</p>
+                <p className="font-medium">HVAC used (larger of heating/cooling): {fmt(hvacVA)} VA</p>
             </section>
 
             {/* Motor Loads */}
             <section className="border p-4 rounded bg-gray-50">
             <LoadSection title="Motor Loads" loads={motorLoads} setLoads={setMotorLoads} />
             <p className="mt-2 font-medium">
-              Motor Loads Total = {fmt(motorTotal)} VA + 25% of single largest motor ({fmt(Math.round(0.25 * largestMotor))} VA)  
+              Motor Loads Total = {fmt(motorTotal)} VA + 25% of single largest motor ({fmt(largestMotor)} VA)  
               → {fmt(motorVA)} VA
             </p>
             </section>

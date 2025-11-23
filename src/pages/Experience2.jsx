@@ -4,6 +4,7 @@ import TeamSafetySnapshot from "../assets/experience2/2.jpg";
 import HeavyPipeInstallation from "../assets/experience2/3.jpg";
 import CeilingWork from "../assets/experience2/4.jpg";
 import ExperiencePages from "../components/ExperiencePages";
+import Footer from "../components/Footer";
 
 export default function Experience2() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -61,8 +62,7 @@ export default function Experience2() {
   ];
 
   return (
-    <main>
-      <section className="py-20 bg-gray-50">
+    <main className="py-auto bg-gray-50">
         <div className="max-w-6xl mx-auto px-6">
           {/* Title */}
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-800">
@@ -107,7 +107,6 @@ export default function Experience2() {
             </p>
           </div>
         </div>
-      </section>
 
       {/* Fullscreen image modal */}
       {selectedImage && (
@@ -130,6 +129,7 @@ export default function Experience2() {
       )}
 
       <ExperiencePages />
+      <Footer />
     </main>
   );
 }
