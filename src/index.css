@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+@layer components {
+  .close-button {
+    @apply absolute top-3 right-3 
+           text-black
+           hover:bg-gray-100
+           rounded-full 
+           p-2 
+           transition 
+           duration-200 
+           z-50 
+           cursor-pointer;
+  }
+}
+
 button {
   border-radius: 8px;
   border: 1px solid transparent;

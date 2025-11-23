@@ -270,8 +270,7 @@ export default function Navbar() {
           >
             <button
               onClick={() => setShowTables(false)}
-              className="absolute top-3 right-3 text-gray-600 hover:text-black z-10"
-            >
+              className="close-button">
               ✕
             </button>
 
